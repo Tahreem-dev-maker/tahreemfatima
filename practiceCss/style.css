@@ -1,0 +1,36 @@
+:root{
+    --p-color:rgb(173, 11, 106);
+    --s-color:gray; 
+    --bg-color:bisque;  
+}
+h1{
+   color:var(--p-color);
+}
+body{
+    background-color: var(--bg-color);
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+}
+h2{
+    color: var(--s-color);
+}
+p{
+    color: var(--p-color);
+}
+hr{
+    border: 1px solid var(--s-color);
+}
+
+footer{
+  
+    text-align: center;
+    padding: 10px;
+}
+a{
+    color:var(--s-color);
+    text-decoration: underline;
+}
+header{
+    text-align: center;
+    font-size: larger;
+    
+}
