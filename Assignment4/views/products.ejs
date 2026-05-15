@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Uncle Leo's Bakery — Products</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+    <!-- ── HEADER ─────────────────────────────────────────────────────────── -->
+    <header class="site-header">
+        <a href="/" class="logo">🥐 Uncle Leo's</a>
+        <nav>
+            <a href="/">Home</a>
+            <a href="/products" class="active">Products</a>
+            <a href="/contact">Contact</a>
+        </nav>
+    </header>
+
+    <!-- ── PAGE HERO ──────────────────────────────────────────────────────── -->
+    <section class="page-hero">
+        <h1>Our Menu</h1>
+        <p><%= total %> items available</p>
+    </section>
+
+    <!-- ── FILTERS FORM ───────────────────────────────────────────────────── -->
+    <!--
+        All filters are GET params so the URL stays bookmarkable and shareable.
+        The form submits to /products, resetting the page back to 1 each time
+        the user changes a filter.
+    -->
+    <div class="filters-wrapper">
+        <form class="filters-form" action="/products" method="GET">
+
+            <!-- Search bar -->
+            <div class="filter-group">
+                <label for="search">Search</label>
+                <input
+                    type="text"
+                    id="search"
+                    name="search"
+                    placeholder="e.g. Croissant…"
+                    value="<%= query.search %>"
+                />
+            </div>
+
+            <!-- Category dropdown — options come from DB distinct() -->
+            <div class="filter-group">
+                <label for="category">Category</label>
+                <select id="category" name="category">
+                    <option value="">All Categories</option>
+                    <% categories.forEach(cat => { %>
+                        <option value="<%= cat %>" <%= query.category.toLowerCase() === cat.toLowerCase() ? 'selected' : '' %>>
+                            <%= cat %>
+                        </option>
+                    <% }) %>
+                </select>
+            </div>
+
+            <!-- Price range -->
+            <div class="filter-group filter-group--price">
+                <label>Price Range ($)</label>
+                <div class="price-inputs">
+                    <input
+                        type="number"
+                        name="minPrice"
+                        placeholder="Min"
+                        min="0"
+                        step="0.01"
+                        value="<%= query.minPrice %>"
+                    />
+                    <span>—</span>
+                    <input
+                        type="number"
+                        name="maxPrice"
+                        placeholder="Max"
+                        min="0"
+                        step="0.01"
+                        value="<%= query.maxPrice %>"
+                    />
+                </div>
+            </div>
+
+            <!-- Sort -->
+            <div class="filter-group">
+                <label for="sortBy">Sort By</label>
+                <select id="sortBy" name="sortBy">
+                    <option value="name"       <%= query.sortBy === 'name'       ? 'selected' : '' %>>Name (A–Z)</option>
+                    <option value="price_asc"  <%= query.sortBy === 'price_asc'  ? 'selected' : '' %>>Price: Low → High</option>
+                    <option value="price_desc" <%= query.sortBy === 'price_desc' ? 'selected' : '' %>>Price: High → Low</option>
+                    <option value="rating"     <%= query.sortBy === 'rating'     ? 'selected' : '' %>>Top Rated</option>
+                </select>
+            </div>
+
+            <div class="filter-actions">
+                <button type="submit" class="btn btn--primary">Apply</button>
+                <a href="/products" class="btn btn--ghost">Reset</a>
+            </div>
+
+        </form>
+    </div>
+
+    <!-- ── PRODUCT GRID ────────────────────────────────────────────────────── -->
+    <main class="products-section">
+
+        <% if (products.length === 0) { %>
+            <div class="empty-state">
+                <span>☕</span>
+                <p>No products match your filters.</p>
+                <a href="/products" class="btn btn--primary">Clear filters</a>
+            </div>
+        <% } else { %>
+
+            <div class="products-grid">
+                <% products.forEach(product => { %>
+                    <div class="product-card">
+
+                        <!-- Category badge -->
+                        <span class="badge"><%= product.category %></span>
+
+                        <div class="product-body">
+                            <h3 class="product-name"><%= product.name %></h3>
+
+                            <!-- Star rating (rendered from the numeric value) -->
+                            <div class="stars" title="<%= product.rating %> / 5">
+                                <%
+                                    const full  = Math.floor(product.rating);
+                                    const half  = product.rating % 1 >= 0.5;
+                                    const empty = 5 - full - (half ? 1 : 0);
+                                %>
+                                <% for(let i = 0; i < full;  i++) { %><span class="star full">★</span><% } %>
+                                <% if(half) { %><span class="star half">½</span><% } %>
+                                <% for(let i = 0; i < empty; i++) { %><span class="star empty">☆</span><% } %>
+                                <small>(<%= product.rating %>)</small>
+                            </div>
+
+                            <div class="product-footer">
+                                <span class="price">$<%= product.price.toFixed(2) %></span>
+                                <span class="stock <%= product.stock < 15 ? 'low' : '' %>">
+                                    <%= product.stock < 15 ? '⚠ Low stock' : '✓ In stock' %>
+                                </span>
+                            </div>
+                        </div>
+
+                    </div>
+                <% }) %>
+            </div>
+
+        <% } %>
+
+    </main>
+
+    <!-- ── PAGINATION ─────────────────────────────────────────────────────── -->
+    <%
+        /*
+         * Build a URL for any page number while preserving all other
+         * query params (search, category, price, sort).
+         * We strip 'page' from the query object so we can append the
+         * correct page ourselves.
+         */
+        function pageURL(n) {
+            const params = new URLSearchParams({
+                ...query,         // search, category, minPrice, maxPrice, sortBy
+                page: n
+            });
+            return '/products?' + params.toString();
+        }
+    %>
+
+    <% if (totalPages > 1) { %>
+    <nav class="pagination" aria-label="Page navigation">
+
+        <!-- Previous -->
+        <% if (currentPage > 1) { %>
+            <a href="<%= pageURL(currentPage - 1) %>" class="page-btn">‹ Prev</a>
+        <% } else { %>
+            <span class="page-btn disabled">‹ Prev</span>
+        <% } %>
+
+        <!-- Page numbers -->
+        <% for (let p = 1; p <= totalPages; p++) { %>
+            <a
+                href="<%= pageURL(p) %>"
+                class="page-btn <%= p === currentPage ? 'active' : '' %>"
+            ><%= p %></a>
+        <% } %>
+
+        <!-- Next -->
+        <% if (currentPage < totalPages) { %>
+            <a href="<%= pageURL(currentPage + 1) %>" class="page-btn">Next ›</a>
+        <% } else { %>
+            <span class="page-btn disabled">Next ›</span>
+        <% } %>
+
+    </nav>
+    <% } %>
+
+</body>
+</html>

@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Admin — Uncle Leo's Bakery</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/admin.css"/>
+</head>
+<body>
+
+    <!-- ── SIDEBAR ──────────────────────────────────────────────────────── -->
+    <aside class="sidebar">
+        <div class="sidebar-brand">
+            <span>🥐</span>
+            <span>Uncle Leo's</span>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="/admin" class="nav-item active">📋 Dashboard</a>
+            <a href="/admin/new" class="nav-item">➕ Add Product</a>
+            <a href="/products" class="nav-item">🛍 View Store</a>
+            <a href="/" class="nav-item">🏠 Homepage</a>
+        </nav>
+    </aside>
+
+    <!-- ── MAIN ─────────────────────────────────────────────────────────── -->
+    <main class="admin-main">
+
+        <div class="admin-topbar">
+            <div>
+                <h1 class="admin-title">Product Dashboard</h1>
+                <p class="admin-subtitle"><%= products.length %> products in inventory</p>
+            </div>
+            <a href="/admin/new" class="admin-btn admin-btn--primary">+ Add Product</a>
+        </div>
+
+        <!-- Flash message -->
+        <% if (message) { %>
+            <div class="flash"><%= message %></div>
+        <% } %>
+
+        <!-- Product table -->
+        <div class="table-wrapper">
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>Image</th>
+                        <th>Name</th>
+                        <th>Category</th>
+                        <th>Price</th>
+                        <th>Rating</th>
+                        <th>Stock</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% products.forEach(product => { %>
+                    <tr>
+                        <td>
+                            <% if (product.image) { %>
+                                <img src="/uploads/<%= product.image %>" alt="<%= product.name %>" class="thumb"/>
+                            <% } else { %>
+                                <div class="thumb-placeholder">🥐</div>
+                            <% } %>
+                        </td>
+                        <td class="product-name-cell"><%= product.name %></td>
+                        <td><span class="cat-badge"><%= product.category %></span></td>
+                        <td class="price-cell">$<%= product.price.toFixed(2) %></td>
+                        <td>
+                            <span class="rating-cell"><%= product.rating %> ★</span>
+                        </td>
+                        <td>
+                            <span class="stock-cell <%= product.stock < 15 ? 'low' : '' %>">
+                                <%= product.stock %>
+                            </span>
+                        </td>
+                        <td class="actions-cell">
+                            <a href="/admin/edit/<%= product._id %>" class="admin-btn admin-btn--edit">Edit</a>
+
+                            <!-- Delete uses a form POST — confirmation handled by JS -->
+                            <form
+                                action="/admin/delete/<%= product._id %>"
+                                method="POST"
+                                class="delete-form"
+                                onsubmit="return confirmDelete('<%= product.name %>')"
+                            >
+                                <button type="submit" class="admin-btn admin-btn--delete">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+        </div>
+
+    </main>
+
+    <script>
+        // Confirmation popup before delete
+        function confirmDelete(name) {
+            return confirm(`Are you sure you want to delete "${name}"?\nThis cannot be undone.`);
+        }
+    </script>
+
+</body>
+</html>

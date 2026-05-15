@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Edit Product — Admin</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/admin.css"/>
+</head>
+<body>
+
+    <aside class="sidebar">
+        <div class="sidebar-brand">
+            <span>🥐</span>
+            <span>Uncle Leo's</span>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="/admin" class="nav-item">📋 Dashboard</a>
+            <a href="/admin/new" class="nav-item">➕ Add Product</a>
+            <a href="/products" class="nav-item">🛍 View Store</a>
+            <a href="/" class="nav-item">🏠 Homepage</a>
+        </nav>
+    </aside>
+
+    <main class="admin-main">
+
+        <div class="admin-topbar">
+            <div>
+                <h1 class="admin-title">Edit Product</h1>
+                <p class="admin-subtitle"><%= product.name %></p>
+            </div>
+            <a href="/admin" class="admin-btn admin-btn--ghost">← Back</a>
+        </div>
+
+        <% if (errors.length > 0) { %>
+            <div class="error-box">
+                <ul>
+                    <% errors.forEach(e => { %><li><%= e %></li><% }) %>
+                </ul>
+            </div>
+        <% } %>
+
+        <form class="admin-form" action="/admin/edit/<%= product._id %>" method="POST" enctype="multipart/form-data">
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="name">Product Name *</label>
+                    <!-- value="..." pre-fills the form with existing data -->
+                    <input type="text" id="name" name="name" value="<%= product.name %>" required/>
+                </div>
+                <div class="form-group">
+                    <label for="category">Category *</label>
+                    <input type="text" id="category" name="category" value="<%= product.category %>" required/>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="price">Price ($) *</label>
+                    <input type="number" id="price" name="price" value="<%= product.price %>" step="0.01" min="0" required/>
+                </div>
+                <div class="form-group">
+                    <label for="stock">Stock *</label>
+                    <input type="number" id="stock" name="stock" value="<%= product.stock %>" min="0" required/>
+                </div>
+                <div class="form-group">
+                    <label for="rating">Rating (0–5)</label>
+                    <input type="number" id="rating" name="rating" value="<%= product.rating %>" step="0.1" min="0" max="5"/>
+                </div>
+            </div>
+
+            <!-- Show current image if exists -->
+            <% if (product.image) { %>
+                <div class="form-group">
+                    <label>Current Image</label>
+                    <img src="/uploads/<%= product.image %>" alt="current" class="current-img"/>
+                </div>
+            <% } %>
+
+            <div class="form-group">
+                <label for="image">Replace Image <small>(leave empty to keep current)</small></label>
+                <input type="file" id="image" name="image" accept="image/*" class="file-input"/>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="admin-btn admin-btn--primary">Update Product</button>
+                <a href="/admin" class="admin-btn admin-btn--ghost">Cancel</a>
+            </div>
+
+        </form>
+
+    </main>
+
+</body>
+</html>
