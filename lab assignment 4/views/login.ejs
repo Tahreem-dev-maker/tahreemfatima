@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login - Uncle Leo's Bakery</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+    <header>
+        <div class="head">
+            <nav id="main-nav">
+                <ul class="head-list">
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/products">Shop</a></li>
+                    <li><a href="/contact">Contact us</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <section class="last">
+        <div class="form">
+            <h1>LOGIN</h1>
+
+            <% if (success.length > 0) { %>
+                <p style="color:green"><%= success[0] %></p>
+            <% } %>
+            <% if (error.length > 0) { %>
+                <p style="color:red"><%= error[0] %></p>
+            <% } %>
+
+            <form action="/login" method="POST">
+                <label>Email</label><br>
+                <input type="email" name="email" required><br>
+                <label>Password</label><br>
+                <input type="password" name="password" required><br>
+                <button type="submit">Login</button>
+            </form>
+            <p>Don't have an account? <a href="/register">Register</a></p>
+        </div>
+    </section>
+
+    <script src="/script.js"></script>
+</body>
+</html>
