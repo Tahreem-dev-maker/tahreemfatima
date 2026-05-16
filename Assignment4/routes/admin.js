@@ -3,7 +3,10 @@ const router  = express.Router();
 const multer  = require('multer');
 const path    = require('path');
 const Product = require('../models/Product');
+const isLoggedIn = require('../middleware/isLoggedIn');
+const isAdmin = require('../middleware/isAdmin');
 
+router.use('/', isLoggedIn, isAdmin);
 // ── Multer config ─────────────────────────────────────────────────────────────
 // diskStorage lets us control where the file goes and what it's named
 const storage = multer.diskStorage({

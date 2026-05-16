@@ -28,10 +28,17 @@
             </nav>
 
             <div class="head-right">
-                <span><a href="/">Logo</a></span>
-                <span><a href="#">Login</a></span>
-                <span><a href="#">Cart</a></span>
-            </div>
+    <span><a href="/">Logo</a></span>
+    
+    <% if (user) { %>
+        <span><a href="/logout">Logout</a></span>
+    <% } else { %>
+        <span><a href="/login">Login</a></span>
+        <span><a href="/register">Register</a></span>
+    <% } %>
+
+    <span><a href="#">Cart</a></span>
+</div>
 
         </div>
     </header>
