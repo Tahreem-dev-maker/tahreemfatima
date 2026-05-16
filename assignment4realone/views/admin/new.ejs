@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Add Product — Admin</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --cream:   #fdf6ec;
+            --brown:   #4a2c0a;
+            --caramel: #c07c2e;
+            --gold:    #e8a835;
+            --rust:    #b84c1e;
+            --text:    #2d1a06;
+            --muted:   #8c6d4f;
+            --border:  #e8d9c4;
+            --card-bg: #fff9f2;
+            --radius:  10px;
+            --shadow:  0 4px 20px rgba(74,44,10,.08);
+            --sidebar-w: 220px;
+        }
+
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: #f5ede0;
+            color: var(--text);
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* ── Sidebar (same as dashboard) ── */
+        .sidebar {
+            width: var(--sidebar-w);
+            background: var(--brown);
+            display: flex;
+            flex-direction: column;
+            padding: 2rem 0;
+            position: fixed;
+            top: 0; left: 0;
+            height: 100vh;
+        }
+
+        .sidebar-logo {
+            font-family: 'Playfair Display', serif;
+            color: var(--gold);
+            font-size: 1.15rem;
+            font-weight: 700;
+            padding: 0 1.5rem 2rem;
+            border-bottom: 1px solid rgba(255,255,255,.1);
+        }
+
+        .sidebar-logo span {
+            display: block;
+            font-family: 'DM Sans', sans-serif;
+            font-size: .7rem;
+            color: var(--muted);
+            font-weight: 400;
+            letter-spacing: .1em;
+            text-transform: uppercase;
+            margin-top: 2px;
+        }
+
+        .sidebar nav {
+            margin-top: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: .25rem;
+            padding: 0 .75rem;
+        }
+
+        .sidebar nav a {
+            color: #e8d9c4;
+            text-decoration: none;
+            padding: .65rem .85rem;
+            border-radius: 8px;
+            font-size: .88rem;
+            transition: background .2s, color .2s;
+            display: flex;
+            align-items: center;
+            gap: .6rem;
+        }
+
+        .sidebar nav a:hover,
+        .sidebar nav a.active {
+            background: rgba(232,168,53,.15);
+            color: var(--gold);
+        }
+
+        .sidebar-footer {
+            margin-top: auto;
+            padding: 1.5rem;
+            border-top: 1px solid rgba(255,255,255,.1);
+        }
+
+        .sidebar-footer a {
+            color: var(--muted);
+            font-size: .8rem;
+            text-decoration: none;
+        }
+
+        /* ── Main ── */
+        .main {
+            margin-left: var(--sidebar-w);
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .topbar {
+            background: white;
+            border-bottom: 1px solid var(--border);
+            padding: 1rem 2rem;
+        }
+
+        .topbar h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--brown);
+        }
+
+        /* ── Form card ── */
+        .form-card {
+            margin: 2rem;
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 2rem 2.5rem;
+            max-width: 680px;
+        }
+
+        .form-card h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.2rem;
+            color: var(--brown);
+            margin-bottom: 1.5rem;
+            padding-bottom: .75rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.2rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: .4rem;
+        }
+
+        .form-group.full { grid-column: 1 / -1; }
+
+        label {
+            font-size: .78rem;
+            font-weight: 600;
+            letter-spacing: .06em;
+            text-transform: uppercase;
+            color: var(--muted);
+        }
+
+        input[type="text"],
+        input[type="number"],
+        input[type="file"],
+        select {
+            height: 42px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 0 .9rem;
+            font-family: inherit;
+            font-size: .9rem;
+            background: var(--cream);
+            color: var(--text);
+            outline: none;
+            transition: border-color .2s;
+            width: 100%;
+        }
+
+        input[type="file"] {
+            padding: .5rem .9rem;
+            height: auto;
+            cursor: pointer;
+        }
+
+        input:focus, select:focus {
+            border-color: var(--caramel);
+            background: white;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: .75rem;
+            margin-top: 1.75rem;
+            align-items: center;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            height: 42px;
+            padding: 0 1.5rem;
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: .9rem;
+            font-weight: 500;
+            text-decoration: none;
+            cursor: pointer;
+            border: none;
+            transition: all .2s;
+        }
+
+        .btn-primary { background: var(--caramel); color: white; }
+        .btn-primary:hover { background: var(--rust); }
+
+        .btn-ghost {
+            background: transparent;
+            color: var(--muted);
+            border: 1px solid var(--border);
+        }
+        .btn-ghost:hover { border-color: var(--caramel); color: var(--caramel); }
+
+        .hint {
+            font-size: .75rem;
+            color: var(--muted);
+            margin-top: .2rem;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ── SIDEBAR ─────────────────────────────────────────────────────────── -->
+    <aside class="sidebar">
+        <div class="sidebar-logo">
+            🥐 Uncle Leo's
+            <span>Admin Panel</span>
+        </div>
+        <nav>
+            <a href="/admin">📊 Dashboard</a>
+            <a href="/admin/products/new" class="active">➕ Add Product</a>
+            <a href="/products">🛍 View Store</a>
+            <a href="/">🏠 Home</a>
+        </nav>
+        <div class="sidebar-footer">
+            <a href="/admin">← Back to Dashboard</a>
+        </div>
+    </aside>
+
+    <!-- ── MAIN ───────────────────────────────────────────────────────────── -->
+    <div class="main">
+
+        <div class="topbar">
+            <h1>Add New Product</h1>
+        </div>
+
+        <div class="form-card">
+            <h2>Product Details</h2>
+
+            <!--
+                enctype="multipart/form-data" is REQUIRED for file uploads.
+                Without it, multer will never receive the image file.
+            -->
+            <form action="/admin/products" method="POST" enctype="multipart/form-data">
+
+                <div class="form-grid">
+
+                    <div class="form-group full">
+                        <label for="name">Product Name</label>
+                        <input type="text" id="name" name="name" placeholder="e.g. Chocolate Croissant" required />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="category">Category</label>
+                        <input type="text" id="category" name="category" placeholder="e.g. Pastries" required />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="price">Price ($)</label>
+                        <input type="number" id="price" name="price" placeholder="0.00" min="0" step="0.01" required />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="stock">Stock</label>
+                        <input type="number" id="stock" name="stock" placeholder="0" min="0" required />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="rating">Rating (0 – 5)</label>
+                        <input type="number" id="rating" name="rating" placeholder="4.5" min="0" max="5" step="0.1" />
+                    </div>
+
+                    <div class="form-group full">
+                        <label for="image">Product Image</label>
+                        <input type="file" id="image" name="image" accept="image/*" />
+                        <p class="hint">Optional — JPG, PNG, AVIF, WEBP accepted.</p>
+                    </div>
+
+                </div><!-- /.form-grid -->
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">Save Product</button>
+                    <a href="/admin" class="btn btn-ghost">Cancel</a>
+                </div>
+
+            </form>
+        </div>
+
+    </div><!-- /.main -->
+
+</body>
+</html>
