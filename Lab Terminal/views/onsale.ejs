@@ -1,0 +1,91 @@
+<section class="page-hero">
+    <h1>On-Sale Products</h1>
+    <p><%= products.length %> promotional items currently available</p>
+</section>
+
+<main class="products-section">
+    <% if (products.length === 0) { %>
+        <div class="empty-state">
+            <span>🎁</span>
+            <p>No promotional products are on sale right now.</p>
+            <a href="/products" class="btn btn--primary">Browse all products</a>
+        </div>
+    <% } else { %>
+        <div id="product-list" class="products-grid">
+            <% products.forEach((product, index) => {
+                const imagePath = product.image && product.image.trim() ? product.image : saleImages[index % saleImages.length];
+                const description = product.description || saleDescriptions[index % saleDescriptions.length];
+            %>
+                <div class="product-card">
+                    <span class="badge"><%= product.category %></span>
+                    <div class="product-image">
+                        <img src="<%= imagePath %>" alt="<%= product.name %>" />
+                    </div>
+                    <div class="product-body">
+                        <h3 class="product-name"><%= product.name %></h3>
+                        <p class="product-description"><%= description %></p>
+                        <div class="stars" title="<%= product.rating %> / 5">
+                            <%
+                                const full  = Math.floor(product.rating);
+                                const half  = product.rating % 1 >= 0.5;
+                                const empty = 5 - full - (half ? 1 : 0);
+                            %>
+                            <% for (let i = 0; i < full; i++) { %><span class="star full">★</span><% } %>
+                            <% if (half) { %><span class="star half">½</span><% } %>
+                            <% for (let i = 0; i < empty; i++) { %><span class="star empty">☆</span><% } %>
+                            <small>(<%= product.rating %>)</small>
+                        </div>
+                        <div class="product-footer">
+                            <span class="price">$<%= product.price.toFixed(2) %></span>
+                            <span class="stock <%= product.stock < 15 ? 'low' : '' %>">
+                                <%= product.stock < 15 ? '⚠ Low stock' : '✓ In stock' %>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            <% }) %>
+        </div>
+
+        <div class="pagination" id="sale-pagination">
+            <button id="prev-btn" class="page-btn">Previous</button>
+            <span id="page-indicator" class="page-btn active">Page 1 of 1</span>
+            <button id="next-btn" class="page-btn">Next</button>
+        </div>
+    <% } %>
+</main>
+
+<script>
+    $(function () {
+        const cards = $('#product-list .product-card');
+        const pageSize = 10;
+        let currentPage = 1;
+        const totalPages = Math.max(1, Math.ceil(cards.length / pageSize));
+
+        function updatePagination() {
+            cards.hide();
+            const start = (currentPage - 1) * pageSize;
+            const end = currentPage * pageSize;
+            cards.slice(start, end).show();
+
+            $('#page-indicator').text(`Page ${currentPage} of ${totalPages}`);
+            $('#prev-btn').prop('disabled', currentPage === 1);
+            $('#next-btn').prop('disabled', currentPage === totalPages);
+        }
+
+        $('#prev-btn').on('click', function () {
+            if (currentPage > 1) {
+                currentPage -= 1;
+                updatePagination();
+            }
+        });
+
+        $('#next-btn').on('click', function () {
+            if (currentPage < totalPages) {
+                currentPage += 1;
+                updatePagination();
+            }
+        });
+
+        updatePagination();
+    });
+</script>

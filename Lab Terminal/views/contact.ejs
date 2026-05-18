@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us - Uncle Leo's Bakery</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body class="storefront">
+
+    <header>
+        <div class="head">
+
+            <button class="hamburger" id="hamburger-btn" aria-label="Toggle navigation" aria-expanded="false">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+
+            <nav id="main-nav">
+                <ul class="head-list">
+                    <li><a href="/">Home</a></li>
+                    <li><a href="#">Our story</a></li>
+                    <li><a href="/products">Products</a></li>
+                    <li><a href="/onsale-products">On Sale</a></li>
+                    <li><a href="/contact">Contact us</a></li>
+                </ul>
+            </nav>
+
+           <div class="head-right">
+    <span><a href="/">Logo</a></span>
+    
+    <% if (user) { %>
+        <span><a href="/logout">Logout</a></span>
+    <% } else { %>
+        <span><a href="/login">Login</a></span>
+        <span><a href="/register">Register</a></span>
+    <% } %>
+
+    <span><a href="/admin" class="admin-panel">Admin Panel</a></span>
+    <span><a href="#">Cart</a></span>
+</div>
+
+        </div>
+    </header>
+
+    <section class="last">
+        <div class="form">
+            <h1>GET IN TOUCH</h1>
+            <p>Fill out the form below, and we'll get in touch with you as soon as possible!</p>
+            <form action="/contact" method="POST">
+                <label for="name">Full Name</label><br>
+                <input type="text" id="name" name="name"><br>
+                <label for="email">Email Address *</label><br>
+                <input type="email" id="email" name="email"><br>
+                <label for="message">Message</label><br>
+                <textarea id="message" name="message" rows="5"></textarea><br>
+                <button type="submit">Submit</button>
+            </form>
+        </div>
+        <div class="map">
+            <img src="/map.png" alt="map img">
+        </div>
+    </section>
+
+    <section class="foot">
+        <div class="top">
+            <div class="address">
+                <p>Address</p>
+                <p class="addr-detail">305 Evans Bay Parade, Hataitai, Wellington 602</p>
+                <a href="#">Email: uncleleobakery@gmail.com</a><br>
+                <a href="#">Tel: 04 333 2988</a>
+            </div>
+            <div class="quickLink">
+                <p>Quicklinks</p>
+                <a href="#">Shop</a><br>
+                <a href="#">Our Story</a><br>
+                <a href="/contact">Contact</a><br>
+            </div>
+            <div class="Follow">
+                <p>Follow</p>
+                <a href="#">Facebook</a><br>
+                <a href="#">Instagram</a>
+            </div>
+        </div>
+    </section>
+
+    <footer></footer>
+
+    <script src="/script.js"></script>
+</body>
+</html>

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title><%= title || "Uncle Leo's Bakery" %></title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/style.css" />
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js" integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5H5LyyF8=" crossorigin="anonymous"></script>
+</head>
+<body class="<%= bodyClass || '' %>">
+    <header class="site-header">
+        <a href="/" class="logo">🥐 Uncle Leo's</a>
+        <nav>
+            <a href="/">Home</a>
+            <a href="/products">Products</a>
+            <a href="/onsale-products">On Sale</a>
+            <a href="/contact">Contact</a>
+            <% if (user) { %>
+                <a href="/logout">Logout</a>
+            <% } else { %>
+                <a href="/login">Login</a>
+                <a href="/register">Register</a>
+            <% } %>
+            <a href="/admin" class="admin-panel">Admin Panel</a>
+        </nav>
+    </header>
+
+    <main class="page-content">
+        <%- body %>
+    </main>
+
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js" integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5H5LyyF8=" crossorigin="anonymous"></script>
+    <script src="/script.js"></script>
+</body>
+</html>
